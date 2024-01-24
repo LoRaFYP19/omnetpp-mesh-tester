@@ -57,25 +57,24 @@ void LoRaNodeApp::initialize(int stage) {
                     host->getSubmodule("mobility"));
             mobility->par("initialX").setDoubleValue(coordsValues.first);
             mobility->par("initialY").setDoubleValue(coordsValues.second);
-        } else if (strcmp(host->par("deploymentType").stringValue(), "edges")
-                == 0) {
+        } else if (strcmp(host->par("deploymentType").stringValue(), "edges")== 0) {
             double minX = host->par("minX");
             double maxX = host->par("maxX");
             double minY = host->par("minY");
             double maxY = host->par("maxY");
             StationaryMobility *mobility = check_and_cast<StationaryMobility *>(
                     host->getSubmodule("mobility"));
-            if (strcmp(host->par("deploymentType").stringValue(), "circle")==0) {
-                       coordsValues = generateUniformCircleCoordinates(host->par("maxGatewayDistance").doubleValue(), host->par("gatewayX").doubleValue(), host->par("gatewayY").doubleValue());
-                       StationaryMobility *mobility = check_and_cast<StationaryMobility *>(host->getSubmodule("mobility"));
-                       mobility->par("initialX").setDoubleValue(coordsValues.first);
-                       mobility->par("initialY").setDoubleValue(coordsValues.second);
-                    }
+//            if (strcmp(host->par("deploymentType").stringValue(), "circle")==0) {
+//                       coordsValues = generateUniformCircleCoordinates(host->par("maxGatewayDistance").doubleValue(), host->par("gatewayX").doubleValue(), host->par("gatewayY").doubleValue());
+//                       StationaryMobility *mobility = check_and_cast<StationaryMobility *>(host->getSubmodule("mobility"));
+//                       mobility->par("initialX").setDoubleValue(coordsValues.first);
+//                       mobility->par("initialY").setDoubleValue(coordsValues.second);
+//                    }
 
-//            mobility->par("initialX").setDoubleValue(
-//                    minX + maxX * (((nodeId + 1) % 4 / 2) % 2));
-//            mobility->par("initialY").setDoubleValue(
-//                    minY + maxY * (((nodeId) % 4 / 2) % 2));
+            mobility->par("initialX").setDoubleValue(
+                    minX + maxX * (((nodeId + 1) % 4 / 2) % 2));
+            mobility->par("initialY").setDoubleValue(
+                    minY + maxY * (((nodeId) % 4 / 2) % 2));
         } else if (strcmp(host->par("deploymentType").stringValue(), "grid") == 0) {
             double minX = host->par("minX");
             double sepX = host->par("sepX");
@@ -93,10 +92,12 @@ void LoRaNodeApp::initialize(int stage) {
             double maxX = host->par("maxX");
             double minY = host->par("minY");
             double maxY = host->par("maxY");
+            double inix = host->par("initialX");
+            double iniy = host->par("initialY");
             StationaryMobility *mobility = check_and_cast<StationaryMobility *>(
                     host->getSubmodule("mobility"));
-            mobility->par("initialX").setDoubleValue(uniform(minX, maxX));
-            mobility->par("initialY").setDoubleValue(uniform(minY, maxY));
+            mobility->par("initialX").setDoubleValue(inix);
+            mobility->par("initialY").setDoubleValue(iniy);
         }
     } else if (stage == INITSTAGE_APPLICATION_LAYER) {
         bool isOperational;
@@ -155,7 +156,7 @@ void LoRaNodeApp::initialize(int stage) {
         routingPacketsDue = false;
 
         sendPacketsContinuously = par("sendPacketsContinuously");
-        onlyNode0SendsPackets = true;//par("onlyNode0SendsPackets"); hard coded to true
+        onlyNode0SendsPackets = false;//par("onlyNode0SendsPackets"); hard coded to true
         enforceDutyCycle = par("enforceDutyCycle");
         dutyCycle = par("dutyCycle");
         numberOfDestinationsPerNode = par("numberOfDestinationsPerNode");

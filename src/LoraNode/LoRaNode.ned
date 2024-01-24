@@ -31,6 +31,8 @@ module LoRaNode
         double minY @unit(m) = default(0m);
         double maxY @unit(m) = default(1000m);
         double sepY @unit(m) = default(1000m);
+        double initialX @unit(m) = default(0m);
+        double initialY @unit(m) = default(0m);
         int cols = default(10);
         double maxGatewayDistance = default(320.0);
         double gatewayX = default(320.0);
