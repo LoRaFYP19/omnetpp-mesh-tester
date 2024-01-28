@@ -94,6 +94,7 @@ void LoRaNodeApp::initialize(int stage) {
             double maxY = host->par("maxY");
             double inix = host->par("initialX");
             double iniy = host->par("initialY");
+            bool end = host->par("iAmEnd")
             StationaryMobility *mobility = check_and_cast<StationaryMobility *>(
                     host->getSubmodule("mobility"));
             mobility->par("initialX").setDoubleValue(inix);
@@ -215,6 +216,7 @@ void LoRaNodeApp::initialize(int stage) {
             if (strcmp(getContainingNode(this)->par("deploymentType").stringValue(), "grid") == 0) {
                 packetTTL = 2*(sqrt(numberOfNodes)-1);
                 if (routingMetric != 0) {
+//                  packetTTL = 0 ;
                     packetTTL = math::max(2,2*(sqrt(numberOfNodes)-1));
                 }
             }
@@ -335,6 +337,7 @@ void LoRaNodeApp::initialize(int stage) {
 
         if (numberOfDestinationsPerNode == 0 ) {
             numberOfDestinationsPerNode = numberOfNodes-1;
+            EV<< "printing node ID" << endl;
         }
         generateDataPackets();
 
@@ -373,7 +376,7 @@ void LoRaNodeApp::initialize(int stage) {
 
 
         selfPacket = new cMessage("selfPacket");
-
+        EV << "selfPacket vinuja" <<endl;
         if (dataPacketsDue || forwardPacketsDue || routingPacketsDue) {
 
             // Only data packet due

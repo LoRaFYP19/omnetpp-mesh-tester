@@ -33,6 +33,7 @@ module LoRaNode
         double sepY @unit(m) = default(1000m);
         double initialX @unit(m) = default(0m);
         double initialY @unit(m) = default(0m);
+        bool iAmEnd = default(false);
         int cols = default(10);
         double maxGatewayDistance = default(320.0);
         double gatewayX = default(320.0);
