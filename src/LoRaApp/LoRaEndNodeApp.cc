@@ -104,9 +104,9 @@ void LoRaEndNodeApp::initialize(int stage) {
             double maxY = host->par("maxY");
             double inix = host->par("initialX");
             double iniy = host->par("initialY");
-            bool end = host->par("iAmEnd")
+            bool end = host->par("iAmEnd");
             StationaryMobility *mobility = check_and_cast<StationaryMobility *>(
-                    host->getSubmodule("mobility"));
+                                host->getSubmodule("mobility"));
             mobility->par("initialX").setDoubleValue(inix);
             mobility->par("initialY").setDoubleValue(iniy);
         }

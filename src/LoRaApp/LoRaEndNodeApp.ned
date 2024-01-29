@@ -15,10 +15,7 @@
 
 package loranetwork.LoRaApp;
 
-//
-// TODO auto-generated module
-//
-simple LoRaNodeApp
+simple LoRaEndNodeApp
 {
     parameters:
         @signal[LoRa_AppPacketSent](type=long); // optional
@@ -52,16 +49,15 @@ simple LoRaNodeApp
         int initialLoRaCR = default(4);
         bool initialUseHeader = default(true);
         bool initialLoRaCAD = default(false);
-        bool iAmEnd = default(false);
         double initialLoRaCADatt @unit(dB) = default(10dB);
-        @class(inet::LoRaNodeApp);
+        @class(inet::LoRaEndNodeApp);
         bool evaluateADRinNode = default(false);
-        int numberOfNodes;
+        int numberOfEndNodes;
         int routingMetric = default(0);
         bool routeDiscovery = default(true);
         double ownDataPriority = default(1);
         int windowSize = default(10);
-        int packetTTL = default(1);
+        int packetTTL = default(0);
         double routingPacketPriority = default(0.5);
         bool storeBestRouteOnly = default(false);
         bool getRoutesFromDataPackets = default(true);

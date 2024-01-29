@@ -92,9 +92,10 @@ void LoRaNodeApp::initialize(int stage) {
             double maxX = host->par("maxX");
             double minY = host->par("minY");
             double maxY = host->par("maxY");
+            //creating the possibility to give a position with the X and Y coordinates.
             double inix = host->par("initialX");
             double iniy = host->par("initialY");
-            bool end = host->par("iAmEnd")
+                // checking whether the node is a end node or not.
             StationaryMobility *mobility = check_and_cast<StationaryMobility *>(
                     host->getSubmodule("mobility"));
             mobility->par("initialX").setDoubleValue(inix);
@@ -211,22 +212,38 @@ void LoRaNodeApp::initialize(int stage) {
         stopRoutingAfterDataDone = par("stopRoutingAfterDataDone");
 
         windowSize = std::min(32, std::max<int>(1, par("windowSize").intValue())); //Must be an int between 1 and 32
+        cModule *host = getContainingNode(this);
+        bool iAmEnd = host->par("iAmEnd");
+        if (iAmEnd){
+            packetTTL = 0;
 
-        if ( packetTTL == 0 ) {
+        }
+        else if ( packetTTL == 0) {
             if (strcmp(getContainingNode(this)->par("deploymentType").stringValue(), "grid") == 0) {
                 packetTTL = 2*(sqrt(numberOfNodes)-1);
+                //packetTTL = (numberOfNodes)-1;
+                packetTTL = 0;
                 if (routingMetric != 0) {
-//                  packetTTL = 0 ;
+//                    packetTTL = 0;
+                    //packetTTL = (numberOfNodes)-1;
                     packetTTL = math::max(2,2*(sqrt(numberOfNodes)-1));
                 }
             }
             else {
+//                packetTTL = 0;
                 packetTTL = 2*(sqrt(numberOfNodes));
                 if (routingMetric != 0) {
+//                    packetTTL = 0;
                     packetTTL = math::max(2,2*(sqrt(numberOfNodes)-1));
+                    //packetTTL = (numberOfNodes)-1;
+                    //print the packetTTL value
+                    EV << "packetTTL value is " << packetTTL << endl;
                 }
             }
         }
+//        else{
+//            packetTTL = 0;
+//        }
 
         //Packet sizes
         dataPacketSize = par("dataPacketDefaultSize");
