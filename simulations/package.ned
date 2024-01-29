@@ -146,3 +146,7 @@ network LoRaMesh
             gwRouter[i].ethg++ <--> Eth1G <--> loRaGW[i].ethg++;
         }
 }
+@statistic[EV](source=LoRaNode; record=count);
+@statistic[EV](source=LoRaGW; record=count);
+@statistic[EV](source=LoRaMedium; record=count);
+

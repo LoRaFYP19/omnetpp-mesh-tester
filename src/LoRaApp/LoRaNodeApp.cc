@@ -12,6 +12,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
+#include <iostream>
 
 #include "LoRaNodeApp.h"
 #include "inet/common/FSMA.h"
@@ -22,6 +23,7 @@
 namespace inet {
 
 #define BROADCAST_ADDRESS   16777215
+
 
 #define NO_FORWARDING                 0
 #define FLOODING_BROADCAST_SINGLE_SF  1
@@ -36,6 +38,7 @@ namespace inet {
 Define_Module (LoRaNodeApp);
 
 void LoRaNodeApp::initialize(int stage) {
+
     cSimpleModule::initialize(stage);
 
     //Current network settings
@@ -212,8 +215,28 @@ void LoRaNodeApp::initialize(int stage) {
         stopRoutingAfterDataDone = par("stopRoutingAfterDataDone");
 
         windowSize = std::min(32, std::max<int>(1, par("windowSize").intValue())); //Must be an int between 1 and 32
-        cModule *host = getContainingNode(this);
-        bool iAmEnd = host->par("iAmEnd");
+        // cModule *host = getContainingNode(this);
+
+        // bool iAmEnd = host->par("iAmEnd");
+        cModule* parentModule = getParentModule();
+        bool iAmEnd = parentModule->par("iAmEnd").boolValue();
+
+        EV << "iAmEnd: " << iAmEnd << endl;
+//        std::cout << "Hello, world!" << std::endl;
+        std::cout << "The node I am end as follows!" << std::endl;
+        std::cout << "iAmEnd value: " << iAmEnd << std::endl;
+
+        if (iAmEnd) {
+            // Code to execute if iAmEnd is true
+            std::cout << "This is an end node." << std::endl;
+            // Perform any actions specific to end nodes here
+        } else {
+            // Code to execute if iAmEnd is false
+            std::cout << "This is not an end node." << std::endl;
+            // Perform actions for non-end nodes here
+        }
+
+
         if (iAmEnd){
             packetTTL = 0;
 
@@ -393,7 +416,7 @@ void LoRaNodeApp::initialize(int stage) {
 
 
         selfPacket = new cMessage("selfPacket");
-        EV << "selfPacket vinuja" <<endl;
+        EV_INFO << "selfPacket vinuja" <<endl;
         if (dataPacketsDue || forwardPacketsDue || routingPacketsDue) {
 
             // Only data packet due
