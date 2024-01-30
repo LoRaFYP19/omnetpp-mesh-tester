@@ -84,7 +84,7 @@ bool LoRaReceiver::computeIsReceptionPossible(const IListening *listening, const
         W minReceptionPower = loRaReception->computeMinPower(reception->getStartTime(part), reception->getEndTime(part));
         W sensitivity = getSensitivity(loRaReception);
         bool isReceptionPossible = minReceptionPower >= sensitivity;
-        EV_DEBUG << "Computing whether reception is possible: minimum reception power = " << minReceptionPower << ", sensitivity = " << sensitivity << " -> reception is " << (isReceptionPossible ? "possible" : "impossible") << endl;
+        EV_INFO << "Computing whether reception is possible: minimum reception power = " << minReceptionPower << ", sensitivity = " << sensitivity << " -> reception is " << (isReceptionPossible ? "possible" : "impossible") << endl;
         if(isReceptionPossible == false) {
            const_cast<LoRaReceiver* >(this)->rcvBelowSensitivity++;
         }
@@ -203,6 +203,7 @@ const ReceptionIndication *LoRaReceiver::computeReceptionIndication(const ISNIR 
 
     const LoRaReception *loRaReception = check_and_cast<const LoRaReception *>(scalarSNIR->getReception());
     indication->setMinRSSI(loRaReception->getPower());
+
     return indication;
 }
 
@@ -215,6 +216,10 @@ const IReceptionDecision *LoRaReceiver::computeReceptionDecision(const IListenin
     auto isReceptionPossible = computeIsReceptionPossible(listening, reception, part);
     auto isReceptionAttempted = isReceptionPossible && computeIsReceptionAttempted(listening, reception, part, interference);
     auto isReceptionSuccessful = isReceptionAttempted && computeIsReceptionSuccessful(listening, reception, part, interference, snir);
+    const LoRaReception *loRaReception = check_and_cast<const LoRaReception *>(reception);
+    W RSSI = loRaReception->computeMinPower(reception->getStartTime(part), reception->getEndTime(part));
+    EV_INFO << "RSSI for this is me = " << RSSI << endl;
+    EV_INFO << "SNIR for this is me = " << snir << endl;
     return new ReceptionDecision(reception, part, isReceptionPossible, isReceptionAttempted, isReceptionSuccessful);
 }
 
@@ -224,7 +229,8 @@ const IReceptionResult *LoRaReceiver::computeReceptionResult(const IListening *l
     auto radioMedium = radio->getMedium();
     auto transmission = reception->getTransmission();
     //const LoRaReception *loRaReception = check_and_cast<const LoRaReception *>(reception);
-    //W RSSI = loRaReception->computeMinPower(reception->getStartTime(part), reception->getEndTime(part));
+
+
     auto indication = computeReceptionIndication(snir);
     // TODO: add all cached decisions?
     auto decisions = new std::vector<const IReceptionDecision *>();
@@ -258,7 +264,7 @@ const IListeningDecision *LoRaReceiver::computeListeningDecision(const IListenin
     W maxPower = loRaNoise->computeMaxPower(listening->getStartTime(), listening->getEndTime());
     bool isListeningPossible = maxPower >= energyDetection;
     delete noise;
-    EV_DEBUG << "Computing whether listening is possible: maximum power = " << maxPower << ", energy detection = " << energyDetection << " -> listening is " << (isListeningPossible ? "possible" : "impossible") << endl;
+    EV_INFO << "Computing whether listening is possible: maximum power = " << maxPower << ", energy detection = " << energyDetection << " -> listening is " << (isListeningPossible ? "possible" : "impossible") << endl;
     return new ListeningDecision(listening, isListeningPossible);
 }
 
