@@ -219,7 +219,24 @@ const IReceptionDecision *LoRaReceiver::computeReceptionDecision(const IListenin
     const LoRaReception *loRaReception = check_and_cast<const LoRaReception *>(reception);
     W RSSI = loRaReception->computeMinPower(reception->getStartTime(part), reception->getEndTime(part));
     EV_INFO << "RSSI for this is me = " << RSSI << endl;
-    EV_INFO << "SNIR for this is me = " << snir << endl;
+//    EV_INFO << "SNIR for this is me = " << snir << endl;
+//    if (snir) {
+//            // Adjust the method names based on your ISNIR class
+//            double snr = snir->getSomeOtherSNRMethod();
+//            EV_INFO << "SNR for this is me = " << snr << endl;
+//        } else {
+//            EV_INFO << "SNR information not available" << endl;
+//        }
+    if (snir) {
+            // Adjust the method names based on your ISNIR class
+            double snr = snir->getMin();
+            EV_INFO << "SNR for this is me = " << snr << endl;
+        } else {
+            EV_INFO << "SNR information not available" << endl;
+        }
+
+
+//    EV_INFO << "SNR for this is me = " << snr << endl;
     return new ReceptionDecision(reception, part, isReceptionPossible, isReceptionAttempted, isReceptionSuccessful);
 }
 
