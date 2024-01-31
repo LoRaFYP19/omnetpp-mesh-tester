@@ -1440,6 +1440,8 @@ simtime_t LoRaNodeApp::sendDataPacket() {
         send(dataPacket, "appOut");
         txSfVector.record(loRaSF);
         txTpVector.record(loRaTP);
+        //rxRssiVector.record(loRaTP);
+
         emit(LoRa_AppPacketSent, loRaSF);
     }
     else {
@@ -1587,6 +1589,7 @@ simtime_t LoRaNodeApp::sendForwardPacket() {
         send(forwardPacket, "appOut");
         txSfVector.record(loRaSF);
         txTpVector.record(loRaTP);
+        //rxRssiVector.record(loRaTP);
         emit(LoRa_AppPacketSent, loRaSF);
     }
     else {
@@ -1707,6 +1710,7 @@ simtime_t LoRaNodeApp::sendRoutingPacket() {
 
         txSfVector.record(loRaSF);
         txTpVector.record(loRaTP);
+        //rxRssiVector.record(loRaTP);
 
         txDuration = calculateTransmissionDuration(routingPacket);
 

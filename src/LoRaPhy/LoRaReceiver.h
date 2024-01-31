@@ -54,6 +54,7 @@ private:
 
 //    cOutVector myRssi;
     mutable cOutVector myRssi;
+    mutable cOutVector mySnr;
 
 
     double snirThreshold;
