@@ -30,7 +30,7 @@ module LoRaRadio extends FlatRadioBase
         //transmitterType = default("Ieee802154UWBIRTransmitter");
         //receiverType = default("Ieee802154UWBIRReceiver");
 
-        carrierFrequency = 868 MHz;
+        carrierFrequency = 923 MHz;
         bandwidth = default(0.25 MHz);
 
         // 802.15.4-2006 (page 28)
@@ -59,7 +59,7 @@ module LoRaRadio extends FlatRadioBase
         receiver.snirThreshold = default(-8 dB);
 
         //Default transmitter power set to maximum for cache limits
-        transmitter.power = default(25.118mW);
+        transmitter.power = default(17.0mW);
         transmitter.preambleDuration = 0.001s;
         //*.energySourceModule = default(absPath(energySourceModule));
         energySourceModule = default(absPath(energySourceModule));
