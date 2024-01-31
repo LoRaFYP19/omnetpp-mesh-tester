@@ -52,6 +52,10 @@ private:
     Hz LoRaBW;
     double LoRaCR;
 
+//    cOutVector myRssi;
+    mutable cOutVector myRssi;
+
+
     double snirThreshold;
 
     bool iAmGateway;

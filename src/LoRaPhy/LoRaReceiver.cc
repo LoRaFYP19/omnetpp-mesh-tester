@@ -31,6 +31,7 @@ void LoRaReceiver::initialize(int stage)
 {
     if (stage == INITSTAGE_LOCAL)
     {
+        myRssi.setName("RSSI Vector");
         snirThreshold = math::dB2fraction(par("snirThreshold"));
         if(strcmp(getParentModule()->getClassName(), "inet::physicallayer::LoRaGWRadio") == 0 ||
            strcmp(getParentModule()->getClassName(), "inet::physicallayer::LoRaMotoGWRadio") == 0 )
@@ -219,6 +220,12 @@ const IReceptionDecision *LoRaReceiver::computeReceptionDecision(const IListenin
     const LoRaReception *loRaReception = check_and_cast<const LoRaReception *>(reception);
     W RSSI = loRaReception->computeMinPower(reception->getStartTime(part), reception->getEndTime(part));
     EV_INFO << "RSSI for this is me = " << RSSI << endl;
+//    myRssi.record(RSSI);
+    double RSSII = RSSI.get();
+    EV_INFO << "RSSSI for me= "<< RSSII<<endl;
+    myRssi.record(RSSII);
+//    myRssi.record(RSSI.get());
+//    myRssi.recordWithTimestamp(simTime(), RSSI.get());
 //    EV_INFO << "SNIR for this is me = " << snir << endl;
 //    if (snir) {
 //            // Adjust the method names based on your ISNIR class
