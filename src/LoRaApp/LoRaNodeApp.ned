@@ -52,7 +52,7 @@ simple LoRaNodeApp
         int initialLoRaCR = default(4);
         bool initialUseHeader = default(true);
         bool initialLoRaCAD = default(false);
-        bool iAmEnd = default(false);
+        //bool iAmEnd = default(false);
         double initialLoRaCADatt @unit(dB) = default(10dB);
         @class(inet::LoRaNodeApp);
         bool evaluateADRinNode = default(false);

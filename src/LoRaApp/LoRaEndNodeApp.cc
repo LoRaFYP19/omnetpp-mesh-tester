@@ -104,7 +104,6 @@ void LoRaEndNodeApp::initialize(int stage) {
             double maxY = host->par("maxY");
             double inix = host->par("initialX");
             double iniy = host->par("initialY");
-            bool end = host->par("iAmEnd");
             StationaryMobility *mobility = check_and_cast<StationaryMobility *>(
                                 host->getSubmodule("mobility"));
             mobility->par("initialX").setDoubleValue(inix);
@@ -205,7 +204,7 @@ void LoRaEndNodeApp::initialize(int stage) {
         rxSfVector.setName("Rx SF Vector");
 
         //Routing variables
-        routingMetric = par("routingMetric");
+        routingMetric = 0 ; //par("routingMetric");
         routeDiscovery = par("routeDiscovery");
         // Route discovery must be enabled for broadcast-based smart forwarding
         switch (routingMetric) {
@@ -221,22 +220,24 @@ void LoRaEndNodeApp::initialize(int stage) {
         stopRoutingAfterDataDone = par("stopRoutingAfterDataDone");
 
         windowSize = std::min(32, std::max<int>(1, par("windowSize").intValue())); //Must be an int between 1 and 32
-
-        if ( packetTTL == 0 ) {
-            if (strcmp(getContainingNode(this)->par("deploymentType").stringValue(), "grid") == 0) {
-                packetTTL = 2*(sqrt(numberOfEndNodes)-1);
-                if (routingMetric != 0) {
-                    packetTTL = 0 ;
-//                    packetTTL = math::max(2,2*(sqrt(numberOfEndNodes)-1));
-                }
-            }
-            else {
-                packetTTL = 2*(sqrt(numberOfEndNodes));
-                if (routingMetric != 0) {
-                    packetTTL = math::max(2,2*(sqrt(numberOfEndNodes)-1));
-                }
-            }
+        if(true){
+            packetTTL = 0;
         }
+//        if ( packetTTL == 0 ) {
+//            if (strcmp(getContainingNode(this)->par("deploymentType").stringValue(), "grid") == 0) {
+//                packetTTL = 2*(sqrt(numberOfEndNodes)-1);
+//                if (routingMetric != 0) {
+//                    packetTTL = 0 ;
+////                    packetTTL = math::max(2,2*(sqrt(numberOfEndNodes)-1));
+//                }
+//            }
+//            else {
+//                packetTTL = 2*(sqrt(numberOfEndNodes));
+//                if (routingMetric != 0) {
+//                    packetTTL = math::max(2,2*(sqrt(numberOfEndNodes)-1));
+//                }
+//            }
+//        }
 
         //Packet sizes
         dataPacketSize = par("dataPacketDefaultSize");
@@ -594,7 +595,7 @@ void LoRaEndNodeApp::handleSelfMessage(cMessage *msg) {
         // Check if there are data packets to forward, and if it is time to send them
         // TODO: Not using forwardPacketsDue ???
         if ( LoRaPacketsToForward.size() > 0 && simTime() >= nextForwardPacketTransmissionTime ) {
-            sendForward = true;
+            sendForward = false;
         }
 
         // Check if there are routing packets to send
@@ -1439,7 +1440,6 @@ simtime_t LoRaEndNodeApp::sendForwardPacket() {
         fullName += addName;
         forwardPacket->setName(fullName.c_str());
         fullName += std::to_string(nodeId);
-
         switch (routingMetric) {
             case NO_FORWARDING:
                 // This should never happen

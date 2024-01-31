@@ -60,25 +60,29 @@ bool LoRaReceiver::computeIsReceptionPossible(const IListening *listening, const
     }
     else {
         LoRaNodeApp *loRaApp = check_and_cast<LoRaNodeApp *>(getParentModule()->getParentModule()->getSubmodule("LoRaNodeApp"));
-        if ( (loRaTransmission->getLoRaCF() == loRaApp->loRaCF && loRaTransmission->getLoRaBW() == loRaApp->loRaBW && loRaTransmission->getLoRaSF() == loRaApp->loRaSF))
+        LoRaEndNodeApp *loRaEndApp = check_and_cast<LoRaEndNodeApp *>(getParentModule()->getParentModule()->getSubmodule("LoRaEndNodeApp"));
+        if ( (loRaTransmission->getLoRaCF() == loRaApp->loRaCF && loRaTransmission->getLoRaBW() == loRaApp->loRaBW && loRaTransmission->getLoRaSF() == loRaApp->loRaSF) && (loRaTransmission->getLoRaCF() == loRaEndApp->loRaCF && loRaTransmission->getLoRaBW() == loRaEndApp->loRaBW && loRaTransmission->getLoRaSF() == loRaEndApp->loRaSF))
         {
             return true;
         }
         else {
             return false;
         }
+
     }
 }
 
 bool LoRaReceiver::computeIsReceptionPossible(const IListening *listening, const IReception *reception, IRadioSignal::SignalPart part) const
 {
     LoRaNodeApp *loRaApp = check_and_cast<LoRaNodeApp *>(getParentModule()->getParentModule()->getParentModule()->getSubmodule("LoRaNodeApp"));
+    LoRaEndNodeApp *loRaEndApp = check_and_cast<LoRaEndNodeApp *>(getParentModule()->getParentModule()->getParentModule()->getSubmodule("LoRaEndNodeApp"));
     //here we can check compatibility of LoRaTx parameters (or beeing a gateway) and reception above sensitivity level
     const LoRaBandListening *loRaListening = check_and_cast<const LoRaBandListening *>(listening);
     const LoRaReception *loRaReception = check_and_cast<const LoRaReception *>(reception);
 
     // If CAD is enabled on the node, the node should be able to receive a packet regardless of the SF being used (sensitivity may be affected, though).
-    if (iAmGateway == false && (loRaListening->getLoRaCF() != loRaReception->getLoRaCF() || loRaListening->getLoRaBW() != loRaReception->getLoRaBW() || (loRaApp->loRaCAD == false && loRaListening->getLoRaSF() != loRaReception->getLoRaSF()))) {
+    //changed check with nu1
+    if (iAmGateway == false && (loRaListening->getLoRaCF() != loRaReception->getLoRaCF() || loRaListening->getLoRaBW() != loRaReception->getLoRaBW() || (loRaApp->loRaCAD == false && loRaListening->getLoRaSF() != loRaReception->getLoRaSF())) && (loRaListening->getLoRaCF() != loRaReception->getLoRaCF() || loRaListening->getLoRaBW() != loRaReception->getLoRaBW() || (loRaEndApp->loRaCAD == false && loRaListening->getLoRaSF() != loRaReception->getLoRaSF()))) {
         return false;
     } else {
         W minReceptionPower = loRaReception->computeMinPower(reception->getStartTime(part), reception->getEndTime(part));
@@ -266,7 +270,9 @@ const IListening *LoRaReceiver::createListening(const IRadio *radio, const simti
     if(iAmGateway == false)
     {
         LoRaNodeApp *loRaApp = check_and_cast<LoRaNodeApp *>(getParentModule()->getParentModule()->getParentModule()->getSubmodule("LoRaNodeApp"));
+        LoRaEndNodeApp *loRaEndApp = check_and_cast<LoRaEndNodeApp *>(getParentModule()->getParentModule()->getParentModule()->getSubmodule("LoRaEndNodeApp"));
         return new LoRaBandListening(radio, startTime, endTime, startPosition, endPosition, loRaApp->loRaCF, loRaApp->loRaSF, loRaApp->loRaBW);
+        return new LoRaBandListening(radio, startTime, endTime, startPosition, endPosition, loRaEndApp->loRaCF, loRaEndApp->loRaSF, loRaEndApp->loRaBW);
     }
     else return new LoRaBandListening(radio, startTime, endTime, startPosition, endPosition, LoRaCF, LoRaSF, LoRaBW);
 }
@@ -299,11 +305,13 @@ W LoRaReceiver::getSensitivity(const LoRaReception *reception) const
     // to be taken into account here.
 
     LoRaNodeApp *loRaApp = check_and_cast<LoRaNodeApp *>(getParentModule()->getParentModule()->getParentModule()->getSubmodule("LoRaNodeApp"));
-
+    LoRaEndNodeApp *loRaEndApp = check_and_cast<LoRaEndNodeApp *>(getParentModule()->getParentModule()->getParentModule()->getSubmodule("LoRaEndNodeApp"));
     double loRaCADatt = 0;
+//    double loRaEndCADatt = 0;
 
-    if (loRaApp->loRaCAD) {
+    if (loRaApp->loRaCAD || loRaEndApp->loRaCAD ) {
         loRaCADatt = loRaApp->loRaCADatt;
+
     }
 
     if(reception->getLoRaSF() == 6)
