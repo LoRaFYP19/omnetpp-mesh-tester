@@ -243,13 +243,13 @@ void LoRaNodeApp::initialize(int stage) {
         }
         else if ( packetTTL == 0) {
             if (strcmp(getContainingNode(this)->par("deploymentType").stringValue(), "grid") == 0) {
-                packetTTL = 2*(sqrt(numberOfNodes)-1);
-                //packetTTL = (numberOfNodes)-1;
+//                packetTTL = 2*(sqrt(numberOfNodes)-1);
+                packetTTL = (numberOfNodes)-1;
                 packetTTL = 0;
                 if (routingMetric != 0) {
 //                    packetTTL = 0;
-                    //packetTTL = (numberOfNodes)-1;
-                    packetTTL = math::max(2,2*(sqrt(numberOfNodes)-1));
+                    packetTTL = (numberOfNodes)-1;
+                    //packetTTL = math::max(2,2*(sqrt(numberOfNodes)-1));
                 }
             }
             else {
@@ -257,8 +257,8 @@ void LoRaNodeApp::initialize(int stage) {
                 packetTTL = 2*(sqrt(numberOfNodes));
                 if (routingMetric != 0) {
 //                    packetTTL = 0;
-                    packetTTL = math::max(2,2*(sqrt(numberOfNodes)-1));
-                    //packetTTL = (numberOfNodes)-1;
+                    //packetTTL = math::max(2,2*(sqrt(numberOfNodes)-1));
+                    packetTTL = (numberOfNodes)-1;
                     //print the packetTTL value
                     EV << "packetTTL value is " << packetTTL << endl;
                 }
