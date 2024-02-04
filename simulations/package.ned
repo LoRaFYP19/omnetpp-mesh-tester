@@ -106,6 +106,7 @@ network LoRaMesh
         int networkSizeX = default(1400);
         int networkSizeY = default(2500);
         //@display("bgb=1400,2500;bgi=background/coquimbo-02;bgl=2");
+        @display("bgb=6000,4500;bgi=maps/normal,s;bgg=1000,2,grey95;bgu=km");
         @display("bgb=2500,2500;bgl=2");
     submodules:
 //        loRaEndNodes[numberOfEndNodes]: endNode {
