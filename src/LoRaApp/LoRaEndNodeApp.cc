@@ -167,7 +167,7 @@ void LoRaEndNodeApp::initialize(int stage) {
         routingPacketsDue = false;
 
         sendPacketsContinuously = par("sendPacketsContinuously");
-        onlyNode0SendsPackets = true;//par("onlyNode0SendsPackets"); hard coded to true
+        onlyNode0SendsPackets = par("onlyNode0SendsPackets"); 
         enforceDutyCycle = par("enforceDutyCycle");
         dutyCycle = par("dutyCycle");
         numberOfDestinationsPerNode = par("numberOfDestinationsPerNode");

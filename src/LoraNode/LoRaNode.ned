@@ -41,6 +41,8 @@ module LoRaNode
         @networkNode();
         *.interfaceTableModule = default(absPath(".interfaceTable"));
         @display("bgb=297,313;i=device/accesspoint;is=vs");
+//		@display("bgb=297,313;i=device/accesspoint;i2=device/enddevice;i=!iAmEnd?device/accesspoint:device/enddevice;is=vs");
+		
     submodules:
         interfaceTable: InterfaceTable {
             @display("p=30,26");

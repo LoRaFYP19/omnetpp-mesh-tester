@@ -17,14 +17,15 @@ network LoRaNetworkTest
     parameters:
         int numberOfNodes = default(1);
         int numberOfEndNodes = default(1);
-//        int numberOfGateways = default(1);
+        //        int numberOfGateways = default(1);
         int networkSizeX = default(500);
         int networkSizeY = default(500);
+
         @display("bgb=355.824,356.832");
     submodules:
-//        loRaEndNodes[numberOfEndNodes]: endNode {
-//            @display("p=83.664,233.856");
-//        }
+        //        loRaEndNodes[numberOfEndNodes]: endNode {
+        //            @display("p=83.664,233.856");
+        //        }
         loRaNodes[numberOfNodes]: LoRaNode {
             @display("p=83.664,233.856");
         }
@@ -65,7 +66,7 @@ network LoRaMotoNetworkTest
 {
     parameters:
         int numberOfNodes = default(1);
-//        int numberOfEndNodes = default(1);
+        //        int numberOfEndNodes = default(1);
         int numberOfGateways = default(1);
         int networkSizeX = default(1400);
         int networkSizeY = default(2500);
@@ -75,9 +76,9 @@ network LoRaMotoNetworkTest
         N[numberOfNodes]: LoRaNode {
             @display("p=83.664,233.856;is=n");
         }
-//        loRaEndNodes[numberOfEndNodes]: endNode {
-//            @display("p=83.664,233.856");
-//        }
+        //        loRaEndNodes[numberOfEndNodes]: endNode {
+        //            @display("p=83.664,233.856");
+        //        }
         loRaGW[numberOfGateways]: LoRaGW {
             @display("p=100,100;is=n");
         }
@@ -97,21 +98,30 @@ network LoRaMotoNetworkTest
 }
 
 
-network LoRaMesh
+network LoRaMesh0
 {
     parameters:
         int numberOfNodes = default(1);
-//        int numberOfEndNodes = default(1);
+        //        int numberOfEndNodes = default(1);
         int numberOfGateways = default(1);
         int networkSizeX = default(1400);
         int networkSizeY = default(2500);
+        string mapPath = default("map/uni");
+        int mapWidth = default(1000);
+        int mapHeight = default(1000);
+
         //@display("bgb=1400,2500;bgi=background/coquimbo-02;bgl=2");
-        @display("bgb=6000,4500;bgi=maps/normal,s;bgg=1000,2,grey95;bgu=km");
-        @display("bgb=2500,2500;bgl=2");
+        //        @display("bgb=6000,4500;bgi=map/uni,s;bgg=1000,2,grey95;bgu=km");
+        //		@display("bgb=1000,1000;bgi=$mapPath,s;bgg=500,2,grey95;bgu=m");
+        @display("bgb=$mapWidth,$mapHeight;bgi=$mapPath,s;bgg=500,2,grey95;bgu=m");
+
+
+
+    //        @display("bgb=2500,2500;bgl=2");
     submodules:
-//        loRaEndNodes[numberOfEndNodes]: endNode {
-//            @display("p=83.664,233.856");
-//        }
+        //        loRaEndNodes[numberOfEndNodes]: endNode {
+        //            @display("p=83.664,233.856");
+        //        }
         loRaNodes[numberOfNodes]: LoRaNode {
             @display("p=83.664,233.856;is=n");
         }
@@ -147,6 +157,75 @@ network LoRaMesh
             gwRouter[i].ethg++ <--> Eth1G <--> loRaGW[i].ethg++;
         }
 }
+
+
+network LoRaMesh
+{
+    parameters:
+        int numberOfNodes = default(1);
+        int numberOfEndNodes = default(1);
+        //        int numberOfEndNodes = default(1);
+        int numberOfGateways = default(1);
+        int networkSizeX = default(1400);
+        int networkSizeY = default(2500);
+        string mapPath = default("map/uni");
+        int mapWidth = default(1000);
+        int mapHeight = default(1000);
+
+        //@display("bgb=1400,2500;bgi=background/coquimbo-02;bgl=2");
+        //        @display("bgb=6000,4500;bgi=map/uni,s;bgg=1000,2,grey95;bgu=km");
+        //		@display("bgb=1000,1000;bgi=$mapPath,s;bgg=500,2,grey95;bgu=m");
+        @display("bgb=$mapWidth,$mapHeight;bgi=$mapPath,s;bgg=500,2,grey95;bgu=m");
+
+
+
+    //        @display("bgb=2500,2500;bgl=2");
+    submodules:
+        //        loRaEndNodes[numberOfEndNodes]: endNode {
+        //            @display("p=83.664,233.856");
+        //        }
+        loRaNodes[numberOfNodes]: LoRaNode {
+            @display("p=83.664,233.856;is=n");
+        }
+        
+        loRaEndNodes[numberOfEndNodes]: LoRaNode {
+            @display("i=device/receiverdish;p=83.664,233.856;is=n");
+//            @display("bgb=297,313;i=device/accesspoint;is=vs");
+        }
+        
+        loRaGW[numberOfGateways]: LoRaGW {
+            @display("p=83.664,150.192;is=s");
+        }
+        LoRaMedium: LoRaMedium {
+            @display("p=200,200");
+        }
+        networkServer: StandardHost {
+            parameters:
+                @display("p=850,-100");
+        }
+        configurator: IPv4NetworkConfigurator {
+            parameters:
+                assignDisjunctSubnetAddresses = false;
+                @display("p=1200,-100");
+        }
+        internetCloud: InternetCloud {
+            @display("p=300,-100");
+        }
+        gwRouter[numberOfGateways]: Router {
+            @display("p=50,-100");
+        }
+        nsRouter: Router {
+            @display("p=550,-100");
+        }
+    connections:
+        networkServer.ethg++ <--> Eth1G <--> nsRouter.ethg++;
+        nsRouter.pppg++ <--> Eth1G <--> internetCloud.pppg++;
+        for i=0..numberOfGateways-1 {
+            internetCloud.pppg++ <--> Eth1G <--> gwRouter[i].pppg++;
+            gwRouter[i].ethg++ <--> Eth1G <--> loRaGW[i].ethg++;
+        }
+}
+
 @statistic[EV](source=LoRaNode; record=count);
 @statistic[EV](source=LoRaGW; record=count);
 @statistic[EV](source=LoRaMedium; record=count);
