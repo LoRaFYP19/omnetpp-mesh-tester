@@ -185,19 +185,18 @@ network LoRaMesh
         //            @display("p=83.664,233.856");
         //        }
         loRaNodes[numberOfNodes]: LoRaNode {
-            @display("p=83.664,233.856;is=n");
+            @display("p=134,287;is=n");
         }
-        
+
         loRaEndNodes[numberOfEndNodes]: LoRaNode {
-            @display("i=device/receiverdish;p=83.664,233.856;is=n");
-//            @display("bgb=297,313;i=device/accesspoint;is=vs");
+            @display("i=device/receiverdish;p=71,174;is=n");
         }
-        
+
         loRaGW[numberOfGateways]: LoRaGW {
-            @display("p=83.664,150.192;is=s");
+            @display("p=106,98;is=s");
         }
         LoRaMedium: LoRaMedium {
-            @display("p=200,200");
+            @display("p=251,158");
         }
         networkServer: StandardHost {
             parameters:
