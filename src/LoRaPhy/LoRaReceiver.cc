@@ -33,6 +33,10 @@ void LoRaReceiver::initialize(int stage)
     {
         myRssi.setName("RSSI Vector");
         mySnr.setName("SNR Vector");
+
+        myTimeOnAir.setName("Time One Air");
+
+
         snirThreshold = math::dB2fraction(par("snirThreshold"));
         if(strcmp(getParentModule()->getClassName(), "inet::physicallayer::LoRaGWRadio") == 0 ||
            strcmp(getParentModule()->getClassName(), "inet::physicallayer::LoRaMotoGWRadio") == 0 )
@@ -128,6 +132,9 @@ bool LoRaReceiver::isPacketCollided(const IReception *reception, IRadioSignal::S
     const LoRaReception *loRaReception = check_and_cast<const LoRaReception *>(reception);
     simtime_t m_x = (loRaReception->getStartTime() + loRaReception->getEndTime())/2;
     simtime_t d_x = (loRaReception->getEndTime() - loRaReception->getStartTime())/2;
+//    EV_INFO << "startTime meeeeeeeeeee1 = " << m_x << endl;
+//    EV_INFO << "endTime meeeeeeeeeee1 = " << d_x << endl;
+
     double P_threshold = 6;
     W signalRSSI_w = loRaReception->getPower();
     double signalRSSI_mw = signalRSSI_w.get()*1000;
@@ -225,6 +232,7 @@ const IReceptionDecision *LoRaReceiver::computeReceptionDecision(const IListenin
     double RSSII = RSSI.get();
     EV_INFO << "RSSSI for me= "<< RSSII<<endl;
     myRssi.record(RSSII);
+
 //    myRssi.record(RSSI.get());
 //    myRssi.recordWithTimestamp(simTime(), RSSI.get());
 //    EV_INFO << "SNIR for this is me = " << snir << endl;
@@ -275,10 +283,23 @@ const IListening *LoRaReceiver::createListening(const IRadio *radio, const simti
 {
     if(iAmGateway == false)
     {
+
+        simtime_t differentTime = endTime - startTime;
+        EV_INFO << "startTime meeeeeeeeeee = " << startTime << endl;
+        EV_INFO << "endTime meeeeeeeeeee = " << endTime << endl;
+//        EV_INFO << "TimeOnAir meeeeeee =" << differentTime <<endl;
+
         LoRaNodeApp *loRaApp = check_and_cast<LoRaNodeApp *>(getParentModule()->getParentModule()->getParentModule()->getSubmodule("LoRaNodeApp"));
         return new LoRaBandListening(radio, startTime, endTime, startPosition, endPosition, loRaApp->loRaCF, loRaApp->loRaSF, loRaApp->loRaBW);
+
+//        EV_INFO << "startTime meeeeeeeeeee = " << startTime << endl;
+//        EV_INFO << "endTime meeeeeeeeeee = " << endTime << endl;
+
     }
+
+
     else return new LoRaBandListening(radio, startTime, endTime, startPosition, endPosition, LoRaCF, LoRaSF, LoRaBW);
+
 }
 
 const IListeningDecision *LoRaReceiver::computeListeningDecision(const IListening *listening, const IInterference *interference) const

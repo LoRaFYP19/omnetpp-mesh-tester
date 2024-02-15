@@ -56,6 +56,8 @@ private:
     mutable cOutVector myRssi;
     mutable cOutVector mySnr;
 
+    mutable  cOutVector myTimeOnAir;
+
 
     double snirThreshold;
 
