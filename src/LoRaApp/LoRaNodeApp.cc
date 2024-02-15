@@ -795,6 +795,9 @@ void LoRaNodeApp::handleMessageFromLowerLayer(cMessage *msg) {
     // received from the origin or relayed by a neighbour)
     else if (packet->getDestination() == nodeId) {
         bubble("I received a data packet for me!");
+
+        std::cout << "msg type at dest: " << packet->getMsgType() << std::endl;
+
         manageReceivedPacketForMe(packet);
         if (firstDataPacketReceptionTime == 0) {
             firstDataPacketReceptionTime = simTime();
@@ -809,6 +812,9 @@ void LoRaNodeApp::handleMessageFromLowerLayer(cMessage *msg) {
     else {
         // which we may forward, if it is being broadcast
         if (packet->getVia() == BROADCAST_ADDRESS && routeDiscovery == true) {
+
+            std::cout << "msg type broadcast and route : " << packet->getMsgType() << std::endl;
+
             bubble("I received a multicast data packet to forward!");
             manageReceivedDataPacketToForward(packet);
             if (firstDataPacketReceptionTime == 0) {
@@ -837,7 +843,7 @@ void LoRaNodeApp::handleMessageFromLowerLayer(cMessage *msg) {
 }
 
 void LoRaNodeApp::manageReceivedRoutingPacket(cMessage *msg) {
-
+    //does not execting this part in our application
 
     LoRaAppPacket *packet = check_and_cast<LoRaAppPacket *>(msg);
 
@@ -1095,7 +1101,7 @@ void LoRaNodeApp::manageReceivedPacketToForward(cMessage *msg) {
     receivedPacketsToForward++;
 
     LoRaAppPacket *packet = check_and_cast<LoRaAppPacket *>(msg);
-
+    std::cout << "normal forwarding " << packet->getMsgType() << std::endl;
     switch (packet->getMsgType()) {
     // DATA packet
     case DATA:
@@ -1204,7 +1210,9 @@ void LoRaNodeApp::manageReceivedPacketForMe(cMessage *msg) {
     switch (packet->getMsgType()) {
     // DATA packet
     case DATA:
-        manageReceivedDataPacketForMe(packet);
+        //manageReceivedDataPacketForMe(packet);
+        std::cout << " forwarding even I am the destination " << packet->getMsgType() << std::endl;
+        manageReceivedDataPacketToForward(packet);
         break;
         // ACK packet
     case ACK:
@@ -1251,7 +1259,7 @@ bool LoRaNodeApp::handleOperationStage(LifecycleOperation *operation, int stage,
 
 simtime_t LoRaNodeApp::sendDataPacket() {
     LoRaAppPacket *dataPacket = new LoRaAppPacket("DataFrame");
-
+    std::cout << " i am sending the packet: "  << std::endl;
     bool localData = true;
     bool transmit = false;
     simtime_t txDuration = 0;
@@ -1458,7 +1466,7 @@ simtime_t LoRaNodeApp::sendDataPacket() {
 
 simtime_t LoRaNodeApp::sendForwardPacket() {
     LoRaAppPacket *forwardPacket = new LoRaAppPacket("DataFrame");
-
+    std::cout << " im here forwarding the new packet: "  << std::endl;
     bool transmit = false;
     simtime_t txDuration = 0;
 
