@@ -54,8 +54,8 @@ void LoRaNodeApp::initialize(int stage) {
         if (strcmp(host->par("deploymentType").stringValue(), "circle") == 0) {
             coordsValues = generateUniformCircleCoordinates(
                     host->par("maxGatewayDistance").doubleValue(),
-                    host->par("initialX").doubleValue(),
-                    host->par("initialY").doubleValue());
+                    host->par("gatewayX").doubleValue(),
+                    host->par("gatewayY").doubleValue());
             StationaryMobility *mobility = check_and_cast<StationaryMobility *>(
                     host->getSubmodule("mobility"));
             mobility->par("initialX").setDoubleValue(coordsValues.first);
