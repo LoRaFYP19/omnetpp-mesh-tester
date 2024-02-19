@@ -217,31 +217,31 @@ void LoRaNodeApp::initialize(int stage) {
         windowSize = std::min(32, std::max<int>(1, par("windowSize").intValue())); //Must be an int between 1 and 32
         // cModule *host = getContainingNode(this);
 
-        // bool iAmEnd = host->par("iAmEnd");
-        cModule* parentModule = getParentModule();
-        bool iAmEnd = parentModule->par("iAmEnd").boolValue();
+//         // bool iAmEnd = host->par("iAmEnd");
+//         cModule* parentModule = getParentModule();
+//         bool iAmEnd = parentModule->par("iAmEnd").boolValue();
 
-        EV << "iAmEnd: " << iAmEnd << endl;
-//        std::cout << "Hello, world!" << std::endl;
-        std::cout << "The node I am end as follows!" << std::endl;
-        std::cout << "iAmEnd value: " << iAmEnd << std::endl;
+//         EV << "iAmEnd: " << iAmEnd << endl;
+// //        std::cout << "Hello, world!" << std::endl;
+//         std::cout << "The node I am end as follows!" << std::endl;
+//         std::cout << "iAmEnd value: " << iAmEnd << std::endl;
 
-        if (iAmEnd) {
-            // Code to execute if iAmEnd is true
-            std::cout << "This is an end node." << std::endl;
-            // Perform any actions specific to end nodes here
-        } else {
-            // Code to execute if iAmEnd is false
-            std::cout << "This is not an end node." << std::endl;
-            // Perform actions for non-end nodes here
-        }
+//         if (iAmEnd) {
+//             // Code to execute if iAmEnd is true
+//             std::cout << "This is an end node." << std::endl;
+//             // Perform any actions specific to end nodes here
+//         } else {
+//             // Code to execute if iAmEnd is false
+//             std::cout << "This is not an end node." << std::endl;
+//             // Perform actions for non-end nodes here
+//         }
 
 
-        if (iAmEnd){
-            packetTTL = 0;
+        // if (iAmEnd){
+        //     packetTTL = 0;
 
-        }
-        else if ( packetTTL == 0) {
+        // }
+        if ( packetTTL == 0) {
             if (strcmp(getContainingNode(this)->par("deploymentType").stringValue(), "grid") == 0) {
 //                packetTTL = 2*(sqrt(numberOfNodes)-1);
                 packetTTL = (numberOfNodes)-1;
