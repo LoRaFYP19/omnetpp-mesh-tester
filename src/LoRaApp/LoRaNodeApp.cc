@@ -456,8 +456,15 @@ void LoRaNodeApp::initialize(int stage) {
 
 std::pair<double, double> LoRaNodeApp::generateUniformCircleCoordinates(
     double radius, double gatewayX, double gatewayY) {
+    nodeId = getContainingNode(this)->getIndex();
+    double rand = dblrand ();
     double randomValueRadius = uniform(0, (radius * radius));
     double randomTheta = uniform(0, 2 * M_PI);
+    std::cout << "The Node Id is " << nodeId << std::endl;
+    std::cout << "The random value is " << rand << std::endl;
+    std::cout << "The random value of the radius is " << randomValueRadius << std::endl;
+    std::cout << "The random value of the theta is " << randomTheta << std::endl;
+    
 
     // generate coordinates for circle with origin at 0,0
     double x = sqrt(randomValueRadius) * cos(randomTheta);
