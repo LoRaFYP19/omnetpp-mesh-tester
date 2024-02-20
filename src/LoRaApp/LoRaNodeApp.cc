@@ -42,12 +42,6 @@ void LoRaNodeApp::initialize(int stage) {
     cSimpleModule::initialize(stage);
     routingMetric = par("routingMetric");
 
-    //Current network settings
-    // numberOfNodes = par("numberOfNodes");
-    // std::cout << "numberOfNodes: " << numberOfNodes << std::endl;
-    // numberOfEndNodes = par("numberOfEndNodes");
-    // std::cout << "numberOfEndNodes: " << numberOfEndNodes << std::endl;
-
     if(routingMetric == 0){ // for the END nodes, where no forwarding
         numberOfNodes = par("numberOfEndNodes");
     }
@@ -813,6 +807,7 @@ void LoRaNodeApp::handleMessageFromLowerLayer(cMessage *msg) {
     // Check if the packet is from this node (i.e., a packet that some
     // other node is broadcasting which we have happened to receive). We
     // count it and discard it immediately.
+    std::cout << " Destination "<< packet->getDestination() << " Via" << packet->getVia() << " Broadcast address" << BROADCAST_ADDRESS << std::endl ;
     if (packet->getSource() == nodeId) {
         receivedDataPacketsFromMe++;
         bubble("I received a LoRa packet originally sent by me!");
@@ -835,6 +830,7 @@ void LoRaNodeApp::handleMessageFromLowerLayer(cMessage *msg) {
         lastDataPacketReceptionTime = simTime();
     }
     // Else it can be a routing protocol broadcast message
+
     else if (packet->getDestination() == BROADCAST_ADDRESS) {
         manageReceivedRoutingPacket(packet);
     }
