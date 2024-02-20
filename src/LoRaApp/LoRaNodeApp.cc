@@ -96,8 +96,6 @@ void LoRaNodeApp::initialize(int stage) {
             double minY = host->par("minY");
             double sepY = host->par("sepY");
             int cols = int(sqrt(numberOfNodes));
-            std::cout << "cols: " << cols << std::endl;
-            std::cout<< "nodeId: " << nodeId << std::endl;
             StationaryMobility *mobility = check_and_cast<StationaryMobility *>(
                     host->getSubmodule("mobility"));
             if (nodeId == 0 && routingMetric == 0){ // end node 0 at middle
