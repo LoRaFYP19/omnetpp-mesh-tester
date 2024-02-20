@@ -53,9 +53,9 @@ void LoRaNodeApp::initialize(int stage) {
         // Generate random location for nodes if circle deployment type
         if (strcmp(host->par("deploymentType").stringValue(), "circle") == 0) {
             coordsValues = generateUniformCircleCoordinates(
-                    host->par("maxGatewayDistance").doubleValue(),
-                    host->par("gatewayX").doubleValue(),
-                    host->par("gatewayY").doubleValue());
+                    host->par("rad").doubleValue(),
+                    host->par("centX").doubleValue(),
+                    host->par("centY").doubleValue());
             StationaryMobility *mobility = check_and_cast<StationaryMobility *>(
                     host->getSubmodule("mobility"));
             mobility->par("initialX").setDoubleValue(coordsValues.first);
@@ -455,23 +455,28 @@ void LoRaNodeApp::initialize(int stage) {
 }
 
 std::pair<double, double> LoRaNodeApp::generateUniformCircleCoordinates(
-    double radius, double gatewayX, double gatewayY) {
+    double radius, double centX, double centY) {
     nodeId = getContainingNode(this)->getIndex();
-    double rand = dblrand ();
+    routingMetric = par("routingMetric");
+
+    if (nodeId == 0 && routingMetric == 0) // only for the end nodes and the packet originator
+    {
+        // return std::make_pair(centX, centY);
+        std::pair<double, double> coordValues = std::make_pair(centX, centY);
+        return coordValues;
+    }
+    
     double randomValueRadius = uniform(0, (radius * radius));
     double randomTheta = uniform(0, 2 * M_PI);
-    std::cout << "The Node Id is " << nodeId << std::endl;
-    std::cout << "The random value is " << rand << std::endl;
-    std::cout << "The random value of the radius is " << randomValueRadius << std::endl;
-    std::cout << "The random value of the theta is " << randomTheta << std::endl;
-    
 
     // generate coordinates for circle with origin at 0,0
     double x = sqrt(randomValueRadius) * cos(randomTheta);
     double y = sqrt(randomValueRadius) * sin(randomTheta);
     // Change coordinates based on coordinate system used in OMNeT, with origin at top left
-    x = x + gatewayX;
-    y = gatewayY - y;
+    x = x + centX;
+    y = centY - y;
+
+
     std::pair<double, double> coordValues = std::make_pair(x, y);
     return coordValues;
 }
