@@ -40,9 +40,21 @@ Define_Module (LoRaNodeApp);
 void LoRaNodeApp::initialize(int stage) {
 
     cSimpleModule::initialize(stage);
+    routingMetric = par("routingMetric");
 
     //Current network settings
-    numberOfNodes = par("numberOfNodes");
+    // numberOfNodes = par("numberOfNodes");
+    // std::cout << "numberOfNodes: " << numberOfNodes << std::endl;
+    // numberOfEndNodes = par("numberOfEndNodes");
+    // std::cout << "numberOfEndNodes: " << numberOfEndNodes << std::endl;
+
+    if(routingMetric == 0){ // for the END nodes, where no forwarding
+        numberOfNodes = par("numberOfEndNodes");
+    }
+    else{
+        numberOfNodes = par("numberOfNodes"); // relay nodes
+        
+    }
 
     if (stage == INITSTAGE_LOCAL) {
         // Get this node's ID
@@ -84,12 +96,20 @@ void LoRaNodeApp::initialize(int stage) {
             double minY = host->par("minY");
             double sepY = host->par("sepY");
             int cols = int(sqrt(numberOfNodes));
+            std::cout << "cols: " << cols << std::endl;
+            std::cout<< "nodeId: " << nodeId << std::endl;
             StationaryMobility *mobility = check_and_cast<StationaryMobility *>(
                     host->getSubmodule("mobility"));
-            mobility->par("initialX").setDoubleValue(
-                    minX + sepX * (nodeId % cols));
-            mobility->par("initialY").setDoubleValue(
-                    minY + sepY * ((int) nodeId / cols));
+            if (nodeId == 0 && routingMetric == 0){ // end node 0 at middle
+                mobility->par("initialX").setDoubleValue(minX + sepX * (cols/2));
+                mobility->par("initialY").setDoubleValue(minY + sepY * (cols/2));
+            }
+            else{
+                mobility->par("initialX").setDoubleValue(
+                        minX + sepX * (nodeId % cols));
+                mobility->par("initialY").setDoubleValue(
+                        minY + sepY * ((int) nodeId / cols));
+            }
         } else {
             double minX = host->par("minX");
             double maxX = host->par("maxX");
@@ -245,7 +265,7 @@ void LoRaNodeApp::initialize(int stage) {
             if (strcmp(getContainingNode(this)->par("deploymentType").stringValue(), "grid") == 0) {
 //                packetTTL = 2*(sqrt(numberOfNodes)-1);
                 packetTTL = (numberOfNodes)-1;
-                packetTTL = 0;
+                // packetTTL = 0;
                 if (routingMetric != 0) {
 //                    packetTTL = 0;
                     packetTTL = (numberOfNodes)-1;

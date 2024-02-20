@@ -57,6 +57,7 @@ simple LoRaNodeApp
         @class(inet::LoRaNodeApp);
         bool evaluateADRinNode = default(false);
         int numberOfNodes;
+        int numberOfEndNodes;
         int routingMetric = default(0);
         bool routeDiscovery = default(true);
         double ownDataPriority = default(1);
