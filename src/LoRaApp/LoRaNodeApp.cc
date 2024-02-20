@@ -40,9 +40,21 @@ Define_Module (LoRaNodeApp);
 void LoRaNodeApp::initialize(int stage) {
 
     cSimpleModule::initialize(stage);
+    routingMetric = par("routingMetric");
 
     //Current network settings
-    numberOfNodes = par("numberOfNodes");
+    // numberOfNodes = par("numberOfNodes");
+    // std::cout << "numberOfNodes: " << numberOfNodes << std::endl;
+    // numberOfEndNodes = par("numberOfEndNodes");
+    // std::cout << "numberOfEndNodes: " << numberOfEndNodes << std::endl;
+
+    if(routingMetric == 0){ // for the END nodes, where no forwarding
+        numberOfNodes = par("numberOfEndNodes");
+    }
+    else{
+        numberOfNodes = par("numberOfNodes"); // relay nodes
+        
+    }
 
     if (stage == INITSTAGE_LOCAL) {
         // Get this node's ID
@@ -53,9 +65,9 @@ void LoRaNodeApp::initialize(int stage) {
         // Generate random location for nodes if circle deployment type
         if (strcmp(host->par("deploymentType").stringValue(), "circle") == 0) {
             coordsValues = generateUniformCircleCoordinates(
-                    host->par("maxGatewayDistance").doubleValue(),
-                    host->par("initialX").doubleValue(),
-                    host->par("initialY").doubleValue());
+                    host->par("rad").doubleValue(),
+                    host->par("centX").doubleValue(),
+                    host->par("centY").doubleValue());
             StationaryMobility *mobility = check_and_cast<StationaryMobility *>(
                     host->getSubmodule("mobility"));
             mobility->par("initialX").setDoubleValue(coordsValues.first);
@@ -84,12 +96,20 @@ void LoRaNodeApp::initialize(int stage) {
             double minY = host->par("minY");
             double sepY = host->par("sepY");
             int cols = int(sqrt(numberOfNodes));
+            std::cout << "cols: " << cols << std::endl;
+            std::cout<< "nodeId: " << nodeId << std::endl;
             StationaryMobility *mobility = check_and_cast<StationaryMobility *>(
                     host->getSubmodule("mobility"));
-            mobility->par("initialX").setDoubleValue(
-                    minX + sepX * (nodeId % cols));
-            mobility->par("initialY").setDoubleValue(
-                    minY + sepY * ((int) nodeId / cols));
+            if (nodeId == 0 && routingMetric == 0){ // end node 0 at middle
+                mobility->par("initialX").setDoubleValue(minX + sepX * (cols/2));
+                mobility->par("initialY").setDoubleValue(minY + sepY * (cols/2));
+            }
+            else{
+                mobility->par("initialX").setDoubleValue(
+                        minX + sepX * (nodeId % cols));
+                mobility->par("initialY").setDoubleValue(
+                        minY + sepY * ((int) nodeId / cols));
+            }
         } else {
             double minX = host->par("minX");
             double maxX = host->par("maxX");
@@ -217,35 +237,35 @@ void LoRaNodeApp::initialize(int stage) {
         windowSize = std::min(32, std::max<int>(1, par("windowSize").intValue())); //Must be an int between 1 and 32
         // cModule *host = getContainingNode(this);
 
-        // bool iAmEnd = host->par("iAmEnd");
-        cModule* parentModule = getParentModule();
-        bool iAmEnd = parentModule->par("iAmEnd").boolValue();
+//         // bool iAmEnd = host->par("iAmEnd");
+//         cModule* parentModule = getParentModule();
+//         bool iAmEnd = parentModule->par("iAmEnd").boolValue();
 
-        EV << "iAmEnd: " << iAmEnd << endl;
-//        std::cout << "Hello, world!" << std::endl;
-        std::cout << "The node I am end as follows!" << std::endl;
-        std::cout << "iAmEnd value: " << iAmEnd << std::endl;
+//         EV << "iAmEnd: " << iAmEnd << endl;
+// //        std::cout << "Hello, world!" << std::endl;
+//         std::cout << "The node I am end as follows!" << std::endl;
+//         std::cout << "iAmEnd value: " << iAmEnd << std::endl;
 
-        if (iAmEnd) {
-            // Code to execute if iAmEnd is true
-            std::cout << "This is an end node." << std::endl;
-            // Perform any actions specific to end nodes here
-        } else {
-            // Code to execute if iAmEnd is false
-            std::cout << "This is not an end node." << std::endl;
-            // Perform actions for non-end nodes here
-        }
+//         if (iAmEnd) {
+//             // Code to execute if iAmEnd is true
+//             std::cout << "This is an end node." << std::endl;
+//             // Perform any actions specific to end nodes here
+//         } else {
+//             // Code to execute if iAmEnd is false
+//             std::cout << "This is not an end node." << std::endl;
+//             // Perform actions for non-end nodes here
+//         }
 
 
-        if (iAmEnd){
-            packetTTL = 0;
+        // if (iAmEnd){
+        //     packetTTL = 0;
 
-        }
-        else if ( packetTTL == 0) {
+        // }
+        if ( packetTTL == 0) {
             if (strcmp(getContainingNode(this)->par("deploymentType").stringValue(), "grid") == 0) {
 //                packetTTL = 2*(sqrt(numberOfNodes)-1);
                 packetTTL = (numberOfNodes)-1;
-                packetTTL = 0;
+                // packetTTL = 0;
                 if (routingMetric != 0) {
 //                    packetTTL = 0;
                     packetTTL = (numberOfNodes)-1;
@@ -455,7 +475,17 @@ void LoRaNodeApp::initialize(int stage) {
 }
 
 std::pair<double, double> LoRaNodeApp::generateUniformCircleCoordinates(
-    double radius, double gatewayX, double gatewayY) {
+    double radius, double centX, double centY) {
+    nodeId = getContainingNode(this)->getIndex();
+    routingMetric = par("routingMetric");
+
+    if (nodeId == 0 && routingMetric == 0) // only for the end nodes and the packet originator
+    {
+        // return std::make_pair(centX, centY);
+        std::pair<double, double> coordValues = std::make_pair(centX, centY);
+        return coordValues;
+    }
+    
     double randomValueRadius = uniform(0, (radius * radius));
     double randomTheta = uniform(0, 2 * M_PI);
 
@@ -463,8 +493,10 @@ std::pair<double, double> LoRaNodeApp::generateUniformCircleCoordinates(
     double x = sqrt(randomValueRadius) * cos(randomTheta);
     double y = sqrt(randomValueRadius) * sin(randomTheta);
     // Change coordinates based on coordinate system used in OMNeT, with origin at top left
-    x = x + gatewayX;
-    y = gatewayY - y;
+    x = x + centX;
+    y = centY - y;
+
+
     std::pair<double, double> coordValues = std::make_pair(x, y);
     return coordValues;
 }

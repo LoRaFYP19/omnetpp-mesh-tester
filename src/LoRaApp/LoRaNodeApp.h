@@ -195,6 +195,7 @@ class INET_API LoRaNodeApp : public cSimpleModule, public ILifecycle
 
         //General network variables
         int numberOfNodes;
+        int numberOfEndNodes;
 
         //Packet sizes
         int dataPacketSize;
