@@ -863,7 +863,8 @@ void LoRaNodeApp::handleMessageFromLowerLayer(cMessage *msg) {
         }
         // or not, if it's a unicast packet we just happened to receive.
         else {
-            bubble("Unicast message not for me!");
+            bubble("Unicast message not for me! but still forwarding");
+            manageReceivedDataPacketToForward(packet);
             receivedDataPackets++;
             lastDataPacketReceptionTime = simTime();
         }
