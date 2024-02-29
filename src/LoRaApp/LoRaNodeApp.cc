@@ -53,7 +53,7 @@ void LoRaNodeApp::initialize(int stage) {
     }
     else{
         numberOfNodes = par("numberOfNodes"); // relay nodes
-        
+
     }
 
     if (stage == INITSTAGE_LOCAL) {
@@ -72,6 +72,7 @@ void LoRaNodeApp::initialize(int stage) {
                     host->getSubmodule("mobility"));
             mobility->par("initialX").setDoubleValue(coordsValues.first);
             mobility->par("initialY").setDoubleValue(coordsValues.second);
+
         } else if (strcmp(host->par("deploymentType").stringValue(), "edges")== 0) {
             double minX = host->par("minX");
             double maxX = host->par("maxX");
@@ -494,6 +495,10 @@ std::pair<double, double> LoRaNodeApp::generateUniformCircleCoordinates(
     x = x + centX;
     y = centY - y;
 
+//    EV_INFO << "MY__X__________" << x <<endl;
+//    EV_INFO << "MY__Y__________ " << y <<endl;
+    std::cout << " MY__X__________"  << x << std::endl;
+    std::cout << " MY__Y__________ "  << y << std::endl;
 
     std::pair<double, double> coordValues = std::make_pair(x, y);
     return coordValues;
@@ -863,7 +868,8 @@ void LoRaNodeApp::handleMessageFromLowerLayer(cMessage *msg) {
         }
         // or not, if it's a unicast packet we just happened to receive.
         else {
-            bubble("Unicast message not for me!");
+            bubble("Unicast message not for me! but still forwarding");
+            manageReceivedDataPacketToForward(packet);
             receivedDataPackets++;
             lastDataPacketReceptionTime = simTime();
         }
@@ -2164,4 +2170,3 @@ simtime_t LoRaNodeApp::getTimeToNextForwardPacket() {
 
 
 } //end namespace inet
-
