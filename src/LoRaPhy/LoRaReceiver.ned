@@ -27,7 +27,7 @@ module LoRaReceiver like IReceiver
         @signal[LoRaReceptionCollision](type=bool); // optional
         @statistic[LoRaReceptionCollision](source=LoRaReceptionCollision; record=count);
         double energyDetection @unit(dBm); // no signal is detected at all below this reception power threshold (idle state)
-        double sensitivity @unit(dBm);     // reception is not possible if the signal power is below sensitivity (idle or busy states)
+        double sensitivity @unit(dBm) = default(5dBm);     // reception is not possible if the signal power is below sensitivity (idle or busy states)
         double snirThreshold @unit(dB);    // reception is not successful if the SNIR is below this threshold (unsuccessful reception)
         double carrierFrequency @unit(Hz); // center frequency of the band where this receiver listens on the medium
         double bandwidth @unit(Hz);        // bandwidth of the band where this receiver listens on the medium
