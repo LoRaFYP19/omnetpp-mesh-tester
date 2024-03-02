@@ -76,10 +76,12 @@ void LoRaRadio::initialize(int stage)
     else if (stage == INITSTAGE_PHYSICAL_LAYER) {
         medium->addRadio(this);
         switchTimer = new cMessage("switchTimer");
+        std::cout<<"Inistage physical stage"<< std::endl;
         parseRadioModeSwitchingTimes();
     }
     else if (stage == INITSTAGE_LAST) {
         EV_INFO << "Initialized " << getCompleteStringRepresentation() << endl;
+        std::cout<<"Inistage last"<<std::endl;
     }
 }
 
@@ -193,9 +195,11 @@ IRadioSignal::SignalPart LoRaRadio::getReceivedSignalPart() const
 
 void LoRaRadio::handleMessageWhenDown(cMessage *message)
 {
-    if (message->getArrivalGate() == radioIn || isReceptionTimer(message))
+    if (message->getArrivalGate() == radioIn || isReceptionTimer(message)){
+        std::cout<<"deleting msg"<<std::endl;
         delete message;
-    else
+
+    }else
         OperationalBase::handleMessageWhenDown(message);
 }
 
@@ -639,6 +643,7 @@ void LoRaRadio::updateTransceiverPart()
 
 double LoRaRadio::getCurrentTxPower()
 {
+    //std::cout<<"get transmission power "<< currentTxPower <<std::endl;
     return currentTxPower;
 }
 
