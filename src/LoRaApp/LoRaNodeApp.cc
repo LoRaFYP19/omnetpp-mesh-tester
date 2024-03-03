@@ -64,6 +64,8 @@ void LoRaNodeApp::initialize(int stage) {
 
         // Generate random location for nodes if circle deployment type
         if (strcmp(host->par("deploymentType").stringValue(), "circle") == 0) {
+            cDisplayString& displayString = getParentModule()->getDisplayString();
+            displayString.setTagArg("i", 0, "device/receiverdish");
             coordsValues = generateUniformCircleCoordinates(
                     host->par("rad").doubleValue(),
                     host->par("centX").doubleValue(),
