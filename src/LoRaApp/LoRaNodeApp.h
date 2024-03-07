@@ -183,6 +183,9 @@ class INET_API LoRaNodeApp : public cSimpleModule, public ILifecycle
         cOutVector rxRssiVector;
         cOutVector rxSfVector;
 
+        cOutVector DistanceX;
+        cOutVector DistanceY;
+
         //variables to control ADR
         bool evaluateADRinNode;
         int ADR_ACK_CNT = 0;
