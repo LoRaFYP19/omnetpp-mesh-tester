@@ -217,8 +217,9 @@ void LoRaNodeApp::initialize(int stage) {
         rxRssiVector.setName("Rx1 RSSI Vector");
         rxSfVector.setName("Rx1 SF Vector");
 
-        DistanceX.setName("Distance X Vector");
-        DistanceY.setName("Distance Y Vector");
+        // DistanceX.setName("Distance X Vector");
+
+        // DistanceY.setName("Distance Y Vector");
 
         //Routing variables
         routingMetric = par("routingMetric");
@@ -525,8 +526,10 @@ void LoRaNodeApp::finish() {
     Coord coord = mobility->getCurrentPosition();
 //    recordScalar("positionX", coord.x);
 //    recordScalar("positionY", coord.y);
-    DistanceX.record(coord.x);
-    DistanceY.record(coord.y);
+    // DistanceX.record(coord.x);
+    recordScalar("CordiX",coord.x);
+    // DistanceY.record(coord.y);
+    recordScalar("CordiY",coord.y);
 
 
     recordScalar("finalTP", loRaTP);
