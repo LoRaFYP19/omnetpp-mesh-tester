@@ -62,8 +62,8 @@ std::ostream& LoRaNeighborCache::printToStream(std::ostream& stream, int level) 
 void LoRaNeighborCache::sendToNeighbors(IRadio *transmitter, const IRadioFrame *frame, double range) const
 {
     EV << "LoRaMedium->LoRaNeighborCache sendToNeighbors" << endl;
-    if (this->range < range)
-        throw cRuntimeError("The transmitter's (id: %d) range is bigger then the cache range", transmitter->getId());
+//    if (this->range < range)
+//        throw cRuntimeError("The transmitter's (id: %d) range is bigger then the cache range", transmitter->getId());
 
     RadioEntryCache::const_iterator it = radioToEntry.find(transmitter);
     if (it == radioToEntry.end())
