@@ -105,9 +105,9 @@ void LoRaNodeApp::initialize(int stage) {
             }
             else{
                 mobility->par("initialX").setDoubleValue(
-                        minX + sepX * (nodeId % cols));
+                        minX + sepX * (nodeId % cols) + uniform(0,100));
                 mobility->par("initialY").setDoubleValue(
-                        minY + sepY * ((int) nodeId / cols));
+                        minY + sepY * ((int) nodeId / cols) + uniform(0,100));
             }
         } else {
             double minX = host->par("minX");
