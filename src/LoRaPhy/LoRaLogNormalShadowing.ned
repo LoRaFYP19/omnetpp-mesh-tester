@@ -21,8 +21,8 @@ module LoRaLogNormalShadowing extends FreeSpacePathLoss
 {
     parameters:
         //parameters taken from paper LoRaSim
-        double d0 = default(788m) @unit(m);
-        double gamma = default(3.3);
+        double d0 = default(190m) @unit(m);
+        double gamma = default(3.5);
         double sigma = default(2.88);
         @class(inet::physicallayer::LoRaLogNormalShadowing);
 }
