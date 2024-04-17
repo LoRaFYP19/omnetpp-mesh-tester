@@ -101,7 +101,7 @@ void LoRaNodeApp::initialize(int stage) {
                     host->getSubmodule("mobility"));
             if (nodeId == 0 && routingMetric == 0){ // end node 0 at middle
                 mobility->par("initialX").setDoubleValue(minX + sepX * (cols/2));
-                mobility->par("initialY").setDoubleValue(minY + sepY * (cols/2));
+                mobility->par("initialY").setDoubleValue(minY + sepY * (cols/2)+ uniform(0,100));
             }
             else{
                 mobility->par("initialX").setDoubleValue(
