@@ -15,4 +15,4 @@ More information here: [flora.aalto.fi](http://flora.aalto.fi/)
 3. Open OMNet++ and import git as a custormize FLORA project using the https://github.com/LoRaFYP19/omnetpp-mesh-tester.git
    
 # Description
-This is custormize Flora library
+This is custormize Flora library. Need to add.....
