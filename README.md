@@ -10,7 +10,9 @@ Finally, the energy consumption statistics are collected in every node.
 More information here: [flora.aalto.fi](http://flora.aalto.fi/)
 
 # Installation
-1. Download and Install OMNeT++ 15.1 version from [OMNeT++](https://omnetpp.org/)
-2. Download and Install INET framework 13.5 version from [INET framework](https://inet.omnetpp.org/)
-3. Open OMNet++ and import as git project using the https://github.com/LoRaFYP19/omnetpp-mesh-tester.git
+1. Download and Install OMNeT++ version from [OMNeT++](https://omnetpp.org/)
+2. Download and Install INET framework version from [INET framework](https://inet.omnetpp.org/)
+3. Open OMNet++ and import git as a custormize FLORA project using the https://github.com/LoRaFYP19/omnetpp-mesh-tester.git
    
+# Description
+This is custormize Flora library
