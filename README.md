@@ -15,10 +15,10 @@ For more details, visit the official website: [flora.aalto.fi](http://flora.aalt
 
 ## Prerequisites - Recommonded
 
-- **OMNeT++ 5.3 **  
+- OMNeT++ 5.3   
   [Download OMNeT++](https://omnetpp.org/)
   
-- **INET framework 3.7.1 **  
+- INET framework 3.7.1 
   [Download INET](https://inet.omnetpp.org/)
 
 ## Installation
